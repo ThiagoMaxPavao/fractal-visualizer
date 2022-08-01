@@ -10,3 +10,12 @@ main {
     width: 100%;
     overflow: hidden;
 }
+
+button {
+    cursor: pointer;
+}
+
+canvas {
+    position: absolute;
+    top: 0px;
+}
