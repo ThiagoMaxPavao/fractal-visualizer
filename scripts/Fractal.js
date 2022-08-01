@@ -78,22 +78,25 @@ class Fractal {
             this.sb.stroke(0)
         else {
             let smoothed = Math.log2(Math.log2(x * x + y * y) / 2);  // log_2(log_2(|p|))
-            let colorI = Math.floor(Math.sqrt(iteration + 10 - smoothed) * 256) % colors.length;
+            let colorI = Math.floor(Math.sqrt(iteration + 10 - smoothed) * 256)% colors.length;
             this.sb.stroke(colors[colorI])
         }
     }
 
     render() {
-        for(let xp = 0; xp < this.renderWidth; xp++)
-        for(let yp = 0; yp < this.renderHeight; yp++) {
-            let x0 = this.x + xp*this.width/this.renderWidth
-            let y0 = this.y + yp*this.height/this.renderHeight
-
-            let {x, y, iteration} = this.makeSequence(x0,y0)
-
-            this.setColor(x, y, iteration)
-            this.sb.point(xp, yp)
+        for(let xp = 0; xp < this.renderWidth; xp++) {
+            for(let yp = 0; yp < this.renderHeight; yp++) {
+                let x0 = this.x + xp*this.width/this.renderWidth
+                let y0 = this.y + yp*this.height/this.renderHeight
+    
+                let {x, y, iteration} = this.makeSequence(x0,y0)
+    
+                this.setColor(x, y, iteration)
+                this.sb.point(xp, yp)
+            }
+            renderButton.html((100*xp/this.renderWidth).toFixed(0))
         }
+        renderButton.html("Render")
     }
     
     draw() {

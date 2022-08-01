@@ -16,6 +16,7 @@ var colors
 
 var maxIterationsInput
 var resolutionScaleInput
+var renderButton
 
 var equation = 0
 
@@ -33,6 +34,13 @@ function setup() {
     initializeColors()
     createInterface()
 
+    colorShift = 0
+    showBorders = false
+    borderAux = 0
+    borderColor = color(0)
+
+    sizeUnit = Math.sqrt(width*width + height*height) / 300
+
     mainFractal = new Fractal(width*resolutionScale, height*resolutionScale)
     mainFractal.setDefaultZoom()
     mainFractal.render()
@@ -40,12 +48,7 @@ function setup() {
     fractals = []
     fractals.push(mainFractal)
 
-
-    sizeUnit = Math.sqrt(width*width + height*height) / 100
-
-    showBorders = false
-    borderAux = 0
-    borderColor = color(0)
+    document.querySelector(".loading").remove()
 }
 
 function draw() {
@@ -131,6 +134,7 @@ function updateBorderColor() {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight)
+    sizeUnit = Math.sqrt(width*width + height*height) / 300
 }
 
 function initializeColors() {
@@ -152,10 +156,10 @@ function initializeColors() {
 
 function createInterface() {
     // render
-    button = createButton('Render')
-    button.position(0, 0)
-    button.size(50)
-    button.mousePressed(newRender)
+    renderButton = createButton('Render')
+    renderButton.position(0, 0)
+    renderButton.size(50)
+    renderButton.mousePressed(newRender)
 
     // borders
     button = createButton('Borders')
