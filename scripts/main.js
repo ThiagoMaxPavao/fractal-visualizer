@@ -17,8 +17,16 @@ var colors
 var maxIterationsInput
 var resolutionScaleInput
 var renderButton
+var getMousePositionBtn
+var mousePositionInput
+var mousePositionIgnorePress
+var mousePositionAlreadyGot
+var gettingMousePosition = false
 
-var equation = 0
+var equationJulia = false
+var equationPower = 2
+var equationCR
+var equationCI
 
 function timedRender() {
     t1 = millis()
@@ -33,6 +41,7 @@ function setup() {
 
     initializeColors()
     createInterface()
+    createButtonChangeEquation()
 
     colorShift = 0
     showBorders = false
@@ -56,8 +65,8 @@ function draw() {
     
     for(i in fractals)
         fractals[i].draw()
-    
-        updateBorderColor()
+
+    updateBorderColor()
 }
 
 function currentPosition() {
@@ -85,7 +94,7 @@ function newRender() {
 
     let newPD = newF.pixelDensity
 
-    // insert sorted cresent by pixelDensity
+    // insert sorted crescent by pixelDensity
     let inserted = false
     for(let i = 0; i < fractals.length && !inserted; i++)
     if(newPD < fractals[i].pixelDensity) {
@@ -98,21 +107,27 @@ function newRender() {
 }
 
 function mousePressed() {
-    for(i in fractals)
+    if(gettingMousePosition)
+        showMousePosition()
+    else
+        for(i in fractals)
         fractals[i].setupMove(mouseX, mouseY)
 }
 
 function mouseDragged() {
-    for(i in fractals)
-        fractals[i].move(mouseX, mouseY)
+    if(!gettingMousePosition)
+        for(i in fractals)
+            fractals[i].move(mouseX, mouseY)
 }
 
 function mouseReleased() {
-    for(i in fractals)
-        fractals[i].stopMove()
+    if(!gettingMousePosition)
+        for(i in fractals)
+            fractals[i].stopMove()
 }
 
 function changeScale(event) { // mouse Wheel event
+    if(gettingMousePosition) return
     if (event.deltaY < 0) {
         for(i in fractals)
             fractals[i].scale(1.1)
@@ -129,7 +144,7 @@ function toogleBorders() {
 
 function updateBorderColor() {
     borderAux += 0.1
-    borderColor = color((Math.sin(borderAux)+1)*255)
+    borderColor = color((Math.sin(borderAux)+1)*128)
 }
 
 function windowResized() {
@@ -182,6 +197,13 @@ function createInterface() {
     inputs = document.querySelectorAll("input")
     inputs[0].setAttribute('title', 'Maximum of iterations')
     inputs[1].setAttribute('title', 'Resolution multiplier for rendereziation')
+
+    // getMousePosition
+    button = createButton('Get Mouse Position')
+    button.position(0, 200)
+    button.size(50)
+    button.mousePressed(getMousePositionPressed)
+    getMousePositionBtn = button
 }
 
 function maxIterationsSet() {
@@ -190,4 +212,49 @@ function maxIterationsSet() {
 
 function resolutionScaleSet() {
     resolutionScale = float(this.value())
+}
+
+function resetFractal() {
+    mainFractal = new Fractal(width*resolutionScale, height*resolutionScale)
+    mainFractal.setDefaultZoom()
+    mainFractal.render()
+
+    fractals = []
+    fractals.push(mainFractal)
+}
+
+function getMousePositionPressed() {
+    if(gettingMousePosition) {
+        gettingMousePosition = false
+        getMousePositionBtn.html('Get Mouse Position')
+        mousePositionInput.remove()
+    }
+    else {
+        gettingMousePosition = true
+        mousePositionIgnorePress = true
+        mousePositionAlreadyGot = false
+        getMousePositionBtn.html('Close')
+        mousePositionInput = createInput()
+        mousePositionInput.position(0, 220)
+        mousePositionInput.size(300)
+        document.querySelectorAll("input")[document.querySelectorAll("input").length - 1].setAttribute('placeholder', 'Click somewhere to get the position')
+    }
+}
+
+function showMousePosition() {
+    if(mousePositionIgnorePress) { // ignore de first click
+        mousePositionIgnorePress = false
+        return
+    }
+
+    if(mousePositionAlreadyGot) return
+
+    let {currentX, currentY, currentWidth} = currentPosition()
+    let scale = currentWidth / width
+    let R = currentX + scale * mouseX
+    let I = currentY + scale * mouseY
+
+    mousePositionInput.value(str(R) + " + " + str(I) + "i")
+
+    mousePositionAlreadyGot = true
 }

@@ -28,10 +28,19 @@ class Fractal {
     }
 
     setDefaultZoom() {
-        let minX = -2.2 // -2
-        let maxX = 0.67 //  0.47
-        let minY = -1.3 // -1.12
-        let maxY = 1.3  //  1.12
+        let minX, minY, maxX, maxY
+        if(!equationJulia && equationPower == 2) {
+            minX = -2.2 // -2
+            maxX = 0.67 //  0.47
+            minY = -1.3 // -1.12
+            maxY = 1.3  //  1.12
+        }
+        else {
+            minX = -2
+            maxX =  2
+            minY = -1.4
+            maxY =  1.4
+        }
 
         let maxWidth = maxX - minX
         let maxHeight = maxY - minY
@@ -55,48 +64,87 @@ class Fractal {
         
     }
 
+    complexToPower(a, b, m) {
+        let rm = Math.pow(a*a + b*b, m/2)
+        let tetam = m*Math.atan2(b, a)
+        a = rm * Math.cos(tetam)
+        b = rm * Math.sin(tetam)
+        return {a, b}
+    }
+
     makeSequence(x0,y0) {
-        let x = 0.0
-        let y = 0.0
+        let x = x0
+        let y = y0
         let iteration = 0
-        while(x*x + y*y <= maxValueSq && iteration < maxIterations) {
-            let xtemp = x*x - y*y + x0
-            y = 2*x*y + y0
-            x = xtemp
 
-            // let xtemp = x0 + x*x*x - 3 * x * y * y
-            // y = y0 + 3 * x * x * y - y * y * y
-            // x = xtemp
-
-            iteration++
+        if(equationJulia) {
+            x0 = equationCR
+            y0 = equationCI
         }
+
+        if(equationPower == 2)
+            while(x*x + y*y <= maxValueSq && iteration < maxIterations) {
+                let xtemp = x*x - y*y + x0
+                y = 2*x*y + y0
+                x = xtemp
+                
+                iteration++
+            }
+        else if(equationPower == 3)
+            while(x*x + y*y <= maxValueSq && iteration < maxIterations) {
+                let xtemp = x*x*x - 3 * x * y * y + x0
+                y =  3 * x * x * y - y * y * y + y0
+                x = xtemp
+
+                iteration++
+            }
+        else
+            while(x*x + y*y <= maxValueSq && iteration < maxIterations) {
+                let z = this.complexToPower(x, y, equationPower)
+                x = z.a + x0
+                y = z.b + y0
+                if(x == NaN || y == NaN || x == Infinity || y == Infinity) break
+                
+                iteration++
+            }
+        
         return {x, y, iteration}
     }
 
-    setColor(x, y, iteration) {
+    getColor(x, y, iteration) {
         if(iteration == maxIterations)
-            this.sb.stroke(0)
+            return color(0)
         else {
             let smoothed = Math.log2(Math.log2(x * x + y * y) / 2);  // log_2(log_2(|p|))
             let colorI = Math.floor(Math.sqrt(iteration + 10 - smoothed) * 256)% colors.length;
-            this.sb.stroke(colors[colorI])
+            return colors[colorI]
         }
     }
 
     render() {
-        for(let xp = 0; xp < this.renderWidth; xp++) {
-            for(let yp = 0; yp < this.renderHeight; yp++) {
-                let x0 = this.x + xp*this.width/this.renderWidth
-                let y0 = this.y + yp*this.height/this.renderHeight
-    
-                let {x, y, iteration} = this.makeSequence(x0,y0)
-    
-                this.setColor(x, y, iteration)
-                this.sb.point(xp, yp)
+        this.sb.loadPixels()
+        for(let xp = 0; xp < this.renderWidth; xp++) 
+        for(let yp = 0; yp < this.renderHeight; yp++) {
+            let x0 = this.x + xp*this.width/this.renderWidth
+            let y0 = this.y + yp*this.height/this.renderHeight
+
+            let {x, y, iteration} = this.makeSequence(x0,y0)
+            if(x == NaN || y == NaN || x == Infinity || y == Infinity) continue
+
+            let c = this.getColor(x, y, iteration)
+            
+            // change color of pixel in (xp, yp) to c, considering pixelDensity
+            let d = this.sb.pixelDensity();
+            for (let i = 0; i < d; i++)
+            for (let j = 0; j < d; j++) {
+                let index = 4 * ((yp * d + j) * this.renderWidth * d + (xp * d + i))
+                this.sb.pixels[index] = red(c)
+                this.sb.pixels[index+1] = green(c)
+                this.sb.pixels[index+2] = blue(c)
+                this.sb.pixels[index+3] = 255
             }
-            renderButton.html((100*xp/this.renderWidth).toFixed(0))
         }
-        renderButton.html("Render")
+        this.sb.updatePixels()
     }
     
     draw() {
