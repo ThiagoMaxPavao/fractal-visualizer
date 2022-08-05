@@ -237,7 +237,9 @@ function getMousePositionPressed() {
         mousePositionInput = createInput()
         mousePositionInput.position(0, 220)
         mousePositionInput.size(300)
-        document.querySelectorAll("input")[document.querySelectorAll("input").length - 1].setAttribute('placeholder', 'Click somewhere to get the position')
+        inpElement = document.querySelectorAll("input")[document.querySelectorAll("input").length - 1]
+        inpElement.setAttribute('placeholder', 'Click somewhere to get the position')
+        inpElement.readOnly = true
     }
 }
 
