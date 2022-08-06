@@ -43,7 +43,6 @@ function setup() {
     createInterface()
     createButtonChangeEquation()
 
-    colorShift = 0
     showBorders = false
     borderAux = 0
     borderColor = color(0)
