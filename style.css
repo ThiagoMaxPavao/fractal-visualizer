@@ -1,0 +1,37 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body,
+main,
+.loading {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+button {
+    cursor: pointer;
+}
+
+canvas {
+    position: absolute;
+    top: 0px;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+}
+
+.loading div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px
+}

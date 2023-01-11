@@ -1,0 +1,24 @@
+# Using this files you can set the parameters of the function used to make the sequence to form the fractal. Order of parameters:
+# 
+# Type of equation -> Julia/Mandelbrot
+# Exponent of the equation
+# Real part of the constant C      (only used if type = Julia)
+# Imaginary part of the constant C (only used if type = Julia)
+#
+# Example of Mandelbrot type of exponent 3:
+# 
+# Mandelbrot
+# 3
+#
+# Example of Julia set for C = -0.4 + 0.6i, and exponent 2
+#
+# Julia
+# 2
+# -0.4
+# 0.6
+#
+# Lines starting with '#' are ignored.
+# Leave blank for usual fractal (Mandelbrot, power = 2)
+#
+Mandelbrot
+2
