@@ -20,7 +20,7 @@ Será necessário re-renderizar a imagem após certos intervalos de zoom, para o
 
 - O multiplicador de resolução. Este valor pode ser alterado para gerar uma imagem de resolução diferente da mostrada na tela na hora da renderização. Colocar o valor dois por exemplo, ira gerar uma imagem com 4 vezes mais pixels, que possibilitará mais zoom sem a necessidade de renderizar novamente, mas que também demorará 4 vezes mais para renderizar. Se a renderização tem demorado muito, diminuir este valor pode ajudar.
 
-Por fim, é possível trocar a equação utilizada para gerar o fractal. Sendo possível escolher entre um fractal do tipo [Mandelbrot](https://pt.wikipedia.org/wiki/Conjunto_de_Mandelbrot), com potência ajustável. O u do tipo [Julia](https://pt.wikipedia.org/wiki/Conjunto_de_Julia), sendo possível escolher tanto a potência quanto o valor de *c*, escolhendo a parte imaginária e real do número separadamente.
+Por fim, é possível trocar a equação utilizada para gerar o fractal. Sendo possível escolher entre um fractal do tipo [Mandelbrot](https://pt.wikipedia.org/wiki/Conjunto_de_Mandelbrot), com potência ajustável. Ou do tipo [Julia](https://pt.wikipedia.org/wiki/Conjunto_de_Julia), sendo possível escolher tanto a potência quanto o valor de *c*, escolhendo a parte imaginária e real do número separadamente.
 
 # Galeria
 
